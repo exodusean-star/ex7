@@ -1,63 +1,76 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nginx 테스트 페이지</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-top: 0;
-        }
-        p {
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-        .success-icon {
-            font-size: 3rem;
-            color: #27ae60;
-            margin-bottom: 1rem;
-        }
-        .footer {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: #7f8c8d;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>ST1 EKS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #1a202c; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+    .container { text-align: center; padding: 40px; }
+    h1 { color: white; font-size: 2rem; margin-bottom: 10px; }
+    p { color: #a0aec0; margin-bottom: 40px; }
+    .cards { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .card { background: white; padding: 30px; border-radius: 12px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .card h2 { font-size: 1rem; color: #2d3748; margin-bottom: 8px; }
+    .card p { font-size: 0.85rem; color: #718096; margin-bottom: 16px; }
+    .btn { display: inline-block; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: opacity 0.2s; }
+    .btn:hover { opacity: 0.8; }
+    .btn-blue { background: #4299e1; color: white; }
+    .btn-green { background: #48bb78; color: white; }
+    .status { margin-top: 40px; }
+    .status-item { display: inline-flex; align-items: center; gap: 8px; background: #2d3748; color: #a0aec0; padding: 8px 16px; border-radius: 20px; margin: 4px; font-size: 0.85rem; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #48bb78; }
+    #health-status { color: #a0aec0; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="success-icon">✔</div>
-        <h1>Nginx 작동 확인!</h1>
-        <p>
-            축하합니다! 이 메시지가 보인다면 Nginx 웹 서버가 성공적으로 설치되었고 작동 중입니다.<br>
-            이것은 기본 index.html 파일입니다.
-        </p>
-        <p>
-            추가적인 구성이 필요합니다.
-        </p>
-        <div class="footer">
-            <em>Nginx Server Test Page</em>
-        </div>
+  <div class="container">
+    <h1>🚀 ST1 EKS Dashboard</h1>
+    <p>AWS EKS + ALB 배포 확인 페이지</p>
+
+    <div class="cards">
+      <div class="card">
+        <h2>🌐 Nginx</h2>
+        <p>현재 이 페이지<br>정적 파일 서빙</p>
+        <a href="/" class="btn btn-blue">현재 페이지</a>
+      </div>
+      <div class="card">
+        <h2>⚡ FastAPI</h2>
+        <p>Jinja2 템플릿<br>동적 페이지</p>
+        <a href="/api/" class="btn btn-blue">페이지 이동</a>
+      </div>
+      <div class="card">
+        <h2>❤️ Health Check</h2>
+        <p>FastAPI 리스너<br>상태 확인</p>
+        <a href="#" class="btn btn-green" onclick="checkHealth()">확인하기</a>
+      </div>
     </div>
+
+    <div class="status">
+      <div class="status-item"><span class="dot"></span> Nginx Running</div>
+      <div class="status-item" id="health-status"><span class="dot" style="background:#a0aec0"></span> FastAPI 확인 전</div>
+    </div>
+  </div>
+
+  <script>
+    async function checkHealth() {
+      const el = document.getElementById('health-status');
+      el.innerHTML = '<span class="dot" style="background:#ecc94b"></span> 확인 중...';
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+        if (data.status === 'ok') {
+          el.innerHTML = '<span class="dot"></span> FastAPI Running ✅';
+          el.style.color = '#48bb78';
+        }
+      } catch (e) {
+        el.innerHTML = '<span class="dot" style="background:#fc8181"></span> FastAPI 연결 실패 ❌';
+        el.style.color = '#fc8181';
+      }
+    }
+
+    // 페이지 로드시 자동 health check
+    window.onload = checkHealth;
+  </script>
 </body>
 </html>

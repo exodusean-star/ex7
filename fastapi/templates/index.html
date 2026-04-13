@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #1a202c; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-align: center; }
+    h1 { color: #2d3748; }
+    p { color: #718096; }
+    .badge { background: #4299e1; color: white; padding: 6px 16px; border-radius: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>⚡ {{ title }}</h1>
+    <p>{{ message }}</p>
+    <span class="badge">FastAPI on Kubernetes</span>
+  </div>
+</body>
+</html>
